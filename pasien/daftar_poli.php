@@ -228,7 +228,7 @@ $result_riwayat = $stmt_riwayat->get_result();
                                 <span style="font-weight: bold; color: green;">&#9989; Sudah diperiksa</span>
                             <?php endif; ?>
                         </td>
-                        <td><a href="detail_daftar_poli.php?id=<?php echo $row['id']; ?>" class="btn btn-info btn-sm">Detail</a></td>
+                        <td><a href="detail_daftar_poli.php?id=<?php echo $row['id']; ?>" class="btn btn-primary btn-sm">Detail</a></td>
                     </tr>
                 <?php 
                     endwhile; 

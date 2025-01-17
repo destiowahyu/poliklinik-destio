@@ -375,6 +375,7 @@ td.alamat-pasien{
         padding: 3px 6px;
         font-size: 10px;
     }
+    
     table, thead, tbody, th, td, tr {
                 display: block;
             }
@@ -494,5 +495,6 @@ td.alamat-pasien{
             .table-riwayatdaftarpoli td:nth-of-type(6)::before { content: "Waktu Daftar : "; }
             .table-riwayatdaftarpoli td:nth-of-type(7)::before { content: "Status : "; }
             .table-riwayatdaftarpoli td:nth-of-type(8)::before { content: "Aksi : "; }
+
         }
 }

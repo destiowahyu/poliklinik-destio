@@ -17,8 +17,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $row = $result->fetch_assoc();
         $_SESSION['role'] = 'pasien';
         $_SESSION['username'] = $row['username'];
-        $_SESSION['id'] = $row['id']; // Menyimpan ID pasien ke session
-        header("Location: pasien/dashboard.php");
+        $_SESSION['id'] = $row['id'];
+        header("Location: splash.php");
         exit;
     } else {
         $error = "Username atau password salah.";
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="container d-flex justify-content-center align-items-center vh-100">
         <div class="row" style="width: 77%;">
             <div class="col-md-5 d-flex flex-column justify-content-center align-items-center p-4">
-                <img src="assets/images/patient-icon.png" alt="Pasien" style="width: 100%;">
+                <img src="assets/images/patient-icon.png" alt="Logo" style="width: 100%;"> <!-- Changed to your logo -->
             </div>
             <div class="col-md-7 p-4">
                 <h2 class="mb-4 text-green">Login Pasien</h2>
@@ -63,10 +63,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <a href="registrasi_pasien.php" class="registerpasien">Belum punya akun? Registrasi di sini</a><br>
                     <a href="login_dokter.php" class="logindokter">Login sebagai dokter</a>
                 </div>
-                </div>
-                <div class="permanent-text">
+            </div>
+            <div class="permanent-text">
             </div>
         </div>
     </div>
 </body>
 </html>
+

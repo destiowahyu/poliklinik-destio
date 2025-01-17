@@ -192,7 +192,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 </tr>
                 <tr>
                     <th>Keluhan</th>
-                    <td><?= htmlspecialchars($data['keluhan'] ?? '-') ?></td>
+                    <td><textarea class="form-control" rows="3" readonly><?= htmlspecialchars($data['keluhan'] ?? '-') ?></textarea></td>
                 </tr>
                 <tr>
                     <th>Waktu Pendaftaran</th>
@@ -339,6 +339,14 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <?php endforeach; ?>
         updateObatTable();
         updateTotal();
+
+        // Update the button text for pre-selected medications
+        selectedObat.forEach(obat => {
+            $(`#tableObat tr[data-id="${obat.id}"] .btn-add-obat`)
+                .text('Dipilih')
+                .removeClass('btn-success')
+                .addClass('btn-danger');
+        });
         <?php endif; ?>
 
         // Filter pencarian obat

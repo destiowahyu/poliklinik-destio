@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_SESSION['role'] = 'admin';
         $_SESSION['username'] = $admin['username'];
         $_SESSION['id'] = $admin['id']; // Menyimpan ID admin
-        header("Location: admin/dashboard.php");
+        header("Location: splash.php");
         exit;
     }
 
@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_SESSION['role'] = 'dokter';
         $_SESSION['username'] = $dokter['username'];
         $_SESSION['id'] = $dokter['id']; // Menyimpan ID dokter
-        header("Location: dokter/dashboard.php");
+        header("Location: splash.php");
         exit;
     }
 

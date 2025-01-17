@@ -14,6 +14,13 @@ body {
 .btn-green {
     background-color: #42c3cf;
     color: #ffffff;
+    transition: transform 0.3s ease-in-out;
+    border-radius: 20px;
+}
+
+.btn-green:hover {
+    color: #ffffff;
+    transform: scale(1.05);
 }
 
 .btn-grey {
@@ -71,4 +78,9 @@ body {
     justify-content: center;
     align-items: center;
 }
+
+.form-control {
+    border-radius: 20vh;
+}
+
 

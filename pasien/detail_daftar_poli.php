@@ -70,6 +70,46 @@ $result_obat = $stmt_obat->get_result();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/admin/styles.css">
     <link rel="icon" type="image/png" href="../assets/images/pasien.png">
+    <style>
+    @media screen and (max-width: 767px) {
+        /* Hide table headers */
+        .table th {
+            display: none;
+        }
+        
+        /* Make td blocks */
+        .table tr {
+            display: block;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+        }
+        
+        .table td {
+            display: block;
+            border: none;
+            border-bottom: 1px solid #eee;
+            position: relative;
+            padding-left: 50% !important;
+            text-align: left;
+        }
+
+        .table td:before {
+            content: attr(data-label);
+            position: absolute;
+            left: 10px;
+            width: 45%;
+            padding-right: 10px;
+            white-space: nowrap;
+            font-weight: bold;
+            color: #42c3cf;
+        }
+
+        /* Handle textareas differently */
+        .table td textarea {
+            width: 100%;
+        }
+    }
+</style>
 </head>
 <body>
     <!-- Sidebar -->
@@ -97,50 +137,50 @@ $result_obat = $stmt_obat->get_result();
     <div class="content">
         <div class="container mt-5">
             <h1 class="text-center">Detail Daftar Poli</h1>
-            <table class="table table-bordered mt-4">
-                <tr>
-                    <th>Poli</th>
-                    <td><?php echo htmlspecialchars($detail['nama_poli']); ?></td>
-                </tr>
-                <tr>
-                    <th>Dokter</th>
-                    <td><?php echo htmlspecialchars($detail['nama_dokter']); ?></td>
-                </tr>
-                <tr>
-                    <th>Jadwal</th>
-                    <td><?php echo htmlspecialchars($detail['hari'] . " (" . $detail['jam_mulai'] . " - " . $detail['jam_selesai'] . ")"); ?></td>
-                </tr>
-                <tr>
-                    <th>Nomor Antrian</th>
-                    <td><?php echo htmlspecialchars($detail['no_antrian']); ?></td>
-                </tr>
-                <tr>
-                    <th>Waktu Mendaftar</th>
-                    <td><?php echo htmlspecialchars(date('d-m-Y H:i:s', strtotime($detail['created_at']))); ?></td>
-                </tr>
-                <tr>
-                    <th>Status</th>
-                    <td>
-                        <?php if ($detail['status'] === 'Belum Diperiksa'): ?>
-                            <span style="font-weight: bold; color: red;">&#10060; Belum diperiksa</span>
-                        <?php else: ?>
-                            <span style="font-weight: bold; color: green;">&#9989; Sudah diperiksa</span>
-                        <?php endif; ?>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Keluhan</th>
-                    <td><textarea class="form-control" rows="3" readonly><?php echo htmlspecialchars($detail['keluhan']); ?></textarea></td>
-                </tr>
-                <tr>
-                    <th>Tanggal Periksa</th>
-                    <td><?php echo htmlspecialchars($detail['tgl_periksa'] ?? 'Belum diperiksa'); ?></td>
-                </tr>
-                <tr>
-                    <th>Catatan Dokter</th>
-                    <td><textarea class="form-control" rows="3" readonly><?php echo htmlspecialchars($detail['catatan'] ?? 'Belum ada catatan'); ?></textarea></td>
-                </tr>
-            </table>
+            <table class="table table table-bordered mt-4">
+    <tr>
+        <th>Poli</th>
+        <td data-label="Poli"><?php echo htmlspecialchars($detail['nama_poli']); ?></td>
+    </tr>
+    <tr>
+        <th>Dokter</th>
+        <td data-label="Dokter"><?php echo htmlspecialchars($detail['nama_dokter']); ?></td>
+    </tr>
+    <tr>
+        <th>Jadwal</th>
+        <td data-label="Jadwal"><?php echo htmlspecialchars($detail['hari'] . " (" . $detail['jam_mulai'] . " - " . $detail['jam_selesai'] . ")"); ?></td>
+    </tr>
+    <tr>
+        <th>Nomor Antrian</th>
+        <td data-label="Nomor Antrian"><?php echo htmlspecialchars($detail['no_antrian']); ?></td>
+    </tr>
+    <tr>
+        <th>Waktu Mendaftar</th>
+        <td data-label="Waktu Mendaftar"><?php echo htmlspecialchars(date('d-m-Y H:i:s', strtotime($detail['created_at']))); ?></td>
+    </tr>
+    <tr>
+        <th>Status</th>
+        <td data-label="Status">
+            <?php if ($detail['status'] === 'Belum Diperiksa'): ?>
+                <span style="font-weight: bold; color: red;">&#10060; Belum diperiksa</span>
+            <?php else: ?>
+                <span style="font-weight: bold; color: green;">&#9989; Sudah diperiksa</span>
+            <?php endif; ?>
+        </td>
+    </tr>
+    <tr>
+        <th>Keluhan</th>
+        <td data-label="Keluhan"><textarea class="form-control" rows="3" readonly><?php echo htmlspecialchars($detail['keluhan']); ?></textarea></td>
+    </tr>
+    <tr>
+        <th>Tanggal Periksa</th>
+        <td data-label="Tanggal Periksa"><?php echo htmlspecialchars($detail['tgl_periksa'] ?? 'Belum diperiksa'); ?></td>
+    </tr>
+    <tr>
+        <th>Catatan Dokter</th>
+        <td data-label="Catatan Dokter"><textarea class="form-control" rows="3" readonly><?php echo htmlspecialchars($detail['catatan'] ?? 'Belum ada catatan'); ?></textarea></td>
+    </tr>
+</table>
 
             <h1 class="mt-5 text-center">Daftar Obat yang Diresepkan</h1>
             <table class="table table-bordered mt-3">
@@ -162,11 +202,11 @@ $result_obat = $stmt_obat->get_result();
                             $total_obat += $subtotal;
                     ?>
                         <tr>
-                            <td><?php echo htmlspecialchars($row['nama_obat']); ?></td>
-                            <td><?php echo htmlspecialchars($row['kemasan']); ?></td>
-                            <td>Rp <?php echo number_format($row['harga'], 0, ',', '.'); ?></td>
-                            <td><?php echo htmlspecialchars($row['jumlah']); ?></td>
-                            <td>Rp <?php echo number_format($subtotal, 0, ',', '.'); ?></td>
+                            <td data-label="Nama Obat"><?php echo htmlspecialchars($row['nama_obat']); ?></td>
+                            <td data-label="Kemasan"><?php echo htmlspecialchars($row['kemasan']); ?></td>
+                            <td data-label="Harga">Rp <?php echo number_format($row['harga'], 0, ',', '.'); ?></td>
+                            <td data-label="Jumlah"><?php echo htmlspecialchars($row['jumlah']); ?></td>
+                            <td data-label="Subtotal">Rp <?php echo number_format($subtotal, 0, ',', '.'); ?></td>
                         </tr>
                     <?php 
                         endwhile; 
@@ -187,15 +227,15 @@ $result_obat = $stmt_obat->get_result();
             <table class="table table-bordered mt-3">
                 <tr>
                     <th>Biaya Periksa</th>
-                    <td>Rp <?php echo number_format($biaya_periksa, 0, ',', '.'); ?></td>
+                    <td data-label="Biaya Periksa">Rp <?php echo number_format($biaya_periksa, 0, ',', '.'); ?></td>
                 </tr>
                 <tr>
                     <th>Biaya Obat</th>
-                    <td>Rp <?php echo number_format($total_obat, 0, ',', '.'); ?></td>
+                    <td data-label="Biaya Obat">Rp <?php echo number_format($total_obat, 0, ',', '.'); ?></td>
                 </tr>
                 <tr>
                     <th>Total Biaya</th>
-                    <td>Rp <?php echo number_format($total_biaya, 0, ',', '.'); ?></td>
+                    <td data-label="Total Biaya">Rp <?php echo number_format($total_biaya, 0, ',', '.'); ?></td>
                 </tr>
             </table>
 
