@@ -1,6 +1,6 @@
 body {
     font-family: "Roboto", sans-serif;
-    background-color: #f7f7f7;
+    background-color: #f3f3f3;
 }
 
 .bg-yellow {
@@ -80,7 +80,7 @@ body {
 }
 
 .form-control {
-    border-radius: 20vh;
+    border-radius: 20px;
 }
 
 
