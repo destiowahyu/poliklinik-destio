@@ -124,7 +124,7 @@ $namaDokter = $dokterData['nama']; // Nama asli dokter dari database];
                                 <td><?= htmlspecialchars(date('Y-m-d', strtotime($row['created_at']))) ?></td>
                                 <td>
                                     <?php if ($row['status'] === 'Belum Diperiksa'): ?>
-                                        <span class="badge" style="background-color:rgb(211, 56, 56); color: #fff; border-radius: 20px; padding: 10px;">Belum Diperiksa &#10060;</span>
+                                        <span class="badge" style="background-color:rgb(215, 56, 56); color: #fff; border-radius: 20px; padding: 10px;">Belum Diperiksa &#10060;</span>
                                     <?php else: ?>
                                         <span class="badge" style="background-color:rgb(45, 165, 43); color: #fff; border-radius: 20px; padding: 10px;">Sudah Diperiksa &#9989;</span>
                                     <?php endif; ?>

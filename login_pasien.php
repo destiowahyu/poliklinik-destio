@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <label for="password" class="form-label">Password</label>
                         <input type="password" name="password" id="password" class="form-control" required>
                     </div>
-                    <button type="submit" style="border-radius: 30px;" class="btn btn-green w-100 py-3 mt-2">Login</button>
+                    <button type="submit" style="border-radius: 30px;" class="btn btn-primary w-100 py-3 mt-2">Login</button>
                 </form>
                 <div class="text-center mt-3">
                     <a href="registrasi_pasien.php" class="registerpasien">Belum punya akun? Registrasi di sini</a><br>

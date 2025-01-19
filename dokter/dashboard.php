@@ -48,7 +48,7 @@ $stmt = $conn->prepare("
     SELECT COUNT(*) AS total 
     FROM daftar_poli dp
     JOIN jadwal_periksa jp ON dp.id_jadwal = jp.id
-    WHERE jp.id_dokter = ? AND dp.status = 'Belum Diperiksa'
+    WHERE jp.id_dokter = ? AND DATE(dp.created_at) = CURDATE() AND dp.status = 'Belum Diperiksa'
 ");
 $stmt->bind_param("i", $dokterId);
 $stmt->execute();
@@ -123,7 +123,7 @@ $stmt->close();
                 <a style="text-decoration:none;" href="periksa_pasien.php">
                     <div class="card">
                         <i class="fas fa-user-clock"></i>
-                        <h5>Pasien Belum Diperiksa</h5>
+                        <h5>Pasien Belum Diperiksa Hari Ini</h5>
                         <p><?= $pasienBelumDiperiksa ?></p>
                     </div>
                 </a>

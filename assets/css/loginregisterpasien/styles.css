@@ -83,4 +83,25 @@ body {
     border-radius: 20px;
 }
 
+.btn-primary {
+    background-color: #42c3cf;
+    border-color: #42c3cf;
+}
+
+.btn-primary:hover {
+    background-color: #35b5bf;
+    border-color: #35b5bf;
+}
+
+.btn-primary:active {
+    background-color: #2ea1a8;  /* Warna saat tombol ditekan */
+    border-color: #2ea1a8; /* Border saat tombol ditekan */
+    transform: scale(0.98); /* Opsional: Memberikan efek "tekanan" */
+}
+
+.btn-primary:active {
+    background-color: #2ea1a8 !important;
+    border-color: #2ea1a8 !important;
+    transform: scale(0.98);
+}
 

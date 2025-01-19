@@ -67,4 +67,15 @@
             margin-top: 20px;
             padding: 10px 0;
           }
+        a.btn-primary:active {
+            background-color: #2ea1a8 !important;
+            border-color: #2ea1a8 !important;
+            transform: scale(0.98); /* Efek visual saat tombol ditekan */
+        }
+
+        a.btn-primary:focus {
+            background-color: #2ea1a8 !important;
+            border-color: #2ea1a8 !important;
+            transform: scale(0.98); /* Efek visual saat tombol ditekan */
+        }
 
