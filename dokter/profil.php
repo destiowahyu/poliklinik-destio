@@ -176,7 +176,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                             </div>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                    <button type="button" class="btn btn-primary" style="border-radius: 30px; padding: 10px 20px;" data-bs-toggle="modal" data-bs-target="#editProfileModal">
                     <i class="fas fa-user-edit"></i> Edit Profil
                     </button>
                 </div>

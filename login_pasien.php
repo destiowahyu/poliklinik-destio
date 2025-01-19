@@ -65,12 +65,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="icon" type="image/png" href="assets/images/patient-icon.png">
 </head>
 <body>
-    <div class="container d-flex justify-content-center align-items-center vh-100">
-        <div class="row" style="width: 77%;">
-            <div class="col-md-5 d-flex flex-column justify-content-center align-items-center p-4">
-                <img src="assets/images/patient-icon.png" alt="Logo" style="width: 100%;"> <!-- Changed to your logo -->
+    <div class="container d-flex justify-content-center align-items-center min-vh-100">
+        <div class="row" style="margin: 5%;">
+            <div style="max-width: 350px;" class="col d-flex flex-column justify-content-center align-items-center">
+                <img src="assets/images/patient-icon.png" alt="Logo" style="width: 100%;">
             </div>
-            <div class="col-md-7 p-4">
+            <div class="col-md-7 p-2">
                 <h2 class="mb-4 text-green">Login Pasien</h2>
                 <p class="mb-4">Silahkan masukkan username & password Anda:</p>
                 <?php if (isset($error)): ?>
@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <label for="password" class="form-label">Password</label>
                         <input type="password" name="password" id="password" class="form-control" required>
                     </div>
-                    <button type="submit" class="btn btn-green w-100">Login</button>
+                    <button type="submit" style="border-radius: 30px;" class="btn btn-green w-100 py-3 mt-2">Login</button>
                 </form>
                 <div class="text-center mt-3">
                     <a href="registrasi_pasien.php" class="registerpasien">Belum punya akun? Registrasi di sini</a><br>

@@ -124,18 +124,18 @@ $namaDokter = $dokterData['nama']; // Nama asli dokter dari database];
                                 <td><?= htmlspecialchars(date('Y-m-d', strtotime($row['created_at']))) ?></td>
                                 <td>
                                     <?php if ($row['status'] === 'Belum Diperiksa'): ?>
-                                        <span style="font-weight: bold; color: red;">Belum diperiksa &#10060;</span>
+                                        <span class="badge" style="background-color:rgb(211, 56, 56); color: #fff; border-radius: 20px; padding: 10px;">Belum Diperiksa &#10060;</span>
                                     <?php else: ?>
-                                        <span style="font-weight: bold; color: green;">Sudah diperiksa &#9989;</span>
+                                        <span class="badge" style="background-color:rgb(45, 165, 43); color: #fff; border-radius: 20px; padding: 10px;">Sudah Diperiksa &#9989;</span>
                                     <?php endif; ?>
                                 </td>
                                 <td>
                                     <?php if ($row['status'] === 'Belum Diperiksa'): ?>
-                                        <a href="detail_periksa_pasien.php?id=<?= $row['id_daftar'] ?>" class="btn btn-primary btn-sm">
+                                        <a href="detail_periksa_pasien.php?id=<?= $row['id_daftar'] ?>" class="btn btn-primary btn-sm" style="border-radius: 30px; padding: 7px 20px;">
                                             <i class="fa fa-stethoscope"></i> Periksa
                                         </a>
                                     <?php else: ?>
-                                        <a href="detail_periksa_pasien.php?id=<?= $row['id_daftar'] ?>" class="btn btn-secondary btn-sm">
+                                        <a href="detail_periksa_pasien.php?id=<?= $row['id_daftar'] ?>" class="btn btn-secondary btn-sm" style="border-radius: 30px; padding: 7px 20px;">
                                             <i class="bi bi-pencil-square"></i> Edit
                                         </a>
                                     <?php endif; ?>

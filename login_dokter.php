@@ -1,10 +1,45 @@
 <?php
 session_start();
-require 'includes/db.php'; // Koneksi ke database
+require 'includes/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
+
+    // 1. Deteksi SQL Injection
+    $blacklist_patterns = [
+        "/('|--|;|`)/",                  // Karakter berbahaya
+        "/(union|select|insert|delete|update|drop|alter)/i", // Keyword SQL Injection
+        "/(\bor\b|\band\b)/i",          // Keyword 'OR' atau 'AND'
+    ];
+
+    foreach ($blacklist_patterns as $pattern) {
+        if (preg_match($pattern, $username) || preg_match($pattern, $password)) {
+            header("Location: sqlinjection.php");
+            exit;
+        }
+    }
+
+    // 2. Validasi username
+    // Hanya huruf, angka, underscore (_), dan tanda hubung (-)
+    if (!preg_match("/^[a-zA-Z0-9_-]+$/", $username)) {
+        header("Location: sqlinjection.php");
+        exit;
+    }
+
+    // 3. Validasi panjang input
+    $max_length = 50; // Maksimal panjang username dan password
+    if (strlen($username) > $max_length || strlen($password) > $max_length) {
+        header("Location: sqlinjection.php");
+        exit;
+    }
+
+    // 4. Logging aktivitas mencurigakan
+    function logSuspiciousActivity($username, $reason) {
+        $file = 'suspicious.log';
+        $log = date("Y-m-d H:i:s") . " - Username: $username - Reason: $reason\n";
+        file_put_contents($file, $log, FILE_APPEND);
+    }
 
     // Cek Admin
     $query = "SELECT * FROM admin WHERE username = ?";
@@ -15,49 +50,42 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if ($result->num_rows > 0) {
         $admin = $result->fetch_assoc();
-        // Cek apakah password disimpan menggunakan password_hash()
         if (password_verify($password, $admin['password'])) {
             $_SESSION['role'] = 'admin';
             $_SESSION['username'] = $admin['username'];
-            $_SESSION['id'] = $admin['id']; // Menyimpan ID admin
+            $_SESSION['id'] = $admin['id'];
             header("Location: splash.php");
             exit;
         }
     }
 
-        // Cek Dokter
-        $query = "SELECT * FROM dokter WHERE username = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("s", $username);
-        $stmt->execute();
-        $result = $stmt->get_result();
-    
-        if ($result->num_rows > 0) {
-            $dokter = $result->fetch_assoc();
-            
-            // Verifikasi password menggunakan password_verify()
-            if (password_verify($password, $dokter['password'])) {
-                $_SESSION['role'] = 'dokter';
-                $_SESSION['username'] = $dokter['username'];
-                $_SESSION['id'] = $dokter['id']; // Menyimpan ID dokter
-                header("Location: splash.php");
-                exit;
-            } else {
-                $error = "Username atau password salah!";
-            }
+    // Cek Dokter
+    $query = "SELECT * FROM dokter WHERE username = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $dokter = $result->fetch_assoc();
+        if (password_verify($password, $dokter['password'])) {
+            $_SESSION['role'] = 'dokter';
+            $_SESSION['username'] = $dokter['username'];
+            $_SESSION['id'] = $dokter['id'];
+            header("Location: splash.php");
+            exit;
         } else {
             $error = "Username atau password salah!";
         }
-
-
+    } else {
+        $error = "Username atau password salah!";
+    }
 
     // Jika username dan password salah
     $error = "Username atau password salah!";
+    
 }
 ?>
-
-
-
 
 
 <!doctype html>

@@ -69,8 +69,6 @@ $adminName = $_SESSION['username'];
     </div>
 
     <!-- Main Content -->
-
-
     <div class="content" id="content">
         <div class="header">
             <h1>Dashboard</h1>

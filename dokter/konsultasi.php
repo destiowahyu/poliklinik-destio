@@ -116,9 +116,9 @@ $result_konsultasi = $stmt_konsultasi->get_result();
                                 <td><?= htmlspecialchars($konsultasi['nama_pasien']) ?></td>
                                 <td><?= htmlspecialchars($konsultasi['subject']) ?></td>
                                 <td><?= date('d-m-Y H:i', strtotime($konsultasi['tgl_konsultasi'])) ?></td>
-                                <td><?= $konsultasi['jawaban'] ? '<span class="badge bg-success">Terjawab</span>' : '<span class="badge bg-warning text-dark">Belum Dijawab</span>' ?></td>
+                                <td><?= $konsultasi['jawaban'] ? '<span class="badge" style="background-color:rgb(45, 165, 43); color: #fff; border-radius: 20px; padding: 10px;">Terjawab &#9989;</span>' : '<span class="badge" style="background-color:rgb(242, 235, 29); color: rgb(51, 51, 51); border-radius: 20px; padding: 10px;">Belum Dijawab 🕗</span>' ?></td>
                                 <td>
-                                    <button type="button" class="btn btn-primary btn-sm btn-detail" data-bs-toggle="modal" data-bs-target="#konsultasiModal" 
+                                    <button type="button" class="btn btn-primary btn-sm" style="border-radius: 30px; padding: 7px 20px;" data-bs-toggle="modal" data-bs-target="#konsultasiModal" 
                                             data-id="<?= $konsultasi['id'] ?>"
                                             data-nama="<?= htmlspecialchars($konsultasi['nama_pasien']) ?>"
                                             data-poli="<?= htmlspecialchars($konsultasi['nama_poli']) ?>"

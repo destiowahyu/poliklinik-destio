@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $no_ktp = $_POST['no_ktp'];
     $no_hp = $_POST['no_hp'];
     $username = $_POST['username'];
-    $password = md5($_POST['password']);
+    $password = $_POST['password']; // Simpan password secara langsung
     $no_rm = generateNoRM($conn);
 
     // First check KTP
@@ -37,8 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($check_ktp_result->num_rows > 0) {
         $error = "Nomor KTP sudah terdaftar.";
     } else {
-        // Then check username if KTP is unique, with BINARY for case-sensitivity
-        $check_username_query = "SELECT * FROM pasien WHERE BINARY username = ?";
+        // Then check username if KTP is unique
+        $check_username_query = "SELECT * FROM pasien WHERE username = ?";
         $check_username_stmt = $conn->prepare($check_username_query);
         $check_username_stmt->bind_param("s", $username);
         $check_username_stmt->execute();
@@ -47,10 +47,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($check_username_result->num_rows > 0) {
             $error = "Username sudah terdaftar.";
         } else {
+            // Hash password using password_hash (bcrypt by default)
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
             // If both KTP and username are unique, proceed with registration
             $query = "INSERT INTO pasien (nama, alamat, no_ktp, no_hp, no_rm, username, password) VALUES (?, ?, ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($query);
-            $stmt->bind_param("sssssss", $nama, $alamat, $no_ktp, $no_hp, $no_rm, $username, $password);
+            $stmt->bind_param("sssssss", $nama, $alamat, $no_ktp, $no_hp, $no_rm, $username, $hashed_password);
 
             if ($stmt->execute()) {
                 $success = true;
@@ -98,15 +101,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border: none;
             border-radius: 8px;
         }
+        .readonly-input {
+            background-color: #f0f0f0; 
+            color: #6c757d; 
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
-    <div class="container d-flex justify-content-center align-items-center min-vh-100">
-        <div class="row form-container">
-            <div class="col-md-5 d-flex flex-column justify-content-center align-items-center p-4">
-                <img src="assets/images/pasien.png" alt="Logo" style="width: 100%;">
-            </div>
-            <div class="col-md-7 p-4">
+<div class="container justify-content-center align-items-center" style="max-width:900px;">
+        <div class="row justify-content-center align-items-center" style="margin:5%;">
+            <div class="col justify-content-center align-items-center">
                 <h2 class="mb-4 text-green">Registrasi Pasien</h2>
                 <p class="mb-4">Silahkan isi data diri Anda:</p>
                 <?php if (isset($error)): ?>
@@ -114,8 +119,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php endif; ?>
                 <form method="POST">
                     <div class="mb-3">
-                        <label for="no_rm" class="form-label">Nomor RM</label>
-                        <input type="text" id="no_rm" class="form-control" value="<?php echo generateNoRM($conn); ?>" disabled>
+                        <label for="no_rm" class="form-label" disabled>Nomor RM</label>
+                        <input type="text" id="no_rm" class="form-control readonly-input" value="<?php echo generateNoRM($conn); ?>" disabled>
                     </div>
                     <div class="mb-3">
                         <label for="nama" class="form-label">Nama Lengkap</label>
@@ -141,12 +146,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <label for="password" class="form-label">Password</label>
                         <input type="password" name="password" id="password" class="form-control" required>
                     </div>
-                    <button type="submit" class="btn btn-green w-100">Registrasi</button>
+                    <button type="submit" style="border-radius: 30px;" class="btn btn-green w-100 py-3 mt-3">Registrasi</button>
                 </form>
                 <div class="text-center mt-3">
                     <a href="login_pasien.php" class="registerpasien">Sudah punya akun? Login di sini</a>
                 </div>
             </div>
+            <div class="permanent-text"></div>
         </div>
     </div>
 

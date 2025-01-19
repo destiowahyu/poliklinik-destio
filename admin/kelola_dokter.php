@@ -23,25 +23,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $username = $_POST['username'];
         $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Menggunakan password_hash
 
-        // Cek apakah username sudah ada di database
-        $cekUsername = $conn->prepare("SELECT * FROM dokter WHERE username = ?");
-        $cekUsername->bind_param("s", $username);
-        $cekUsername->execute();
-        $result = $cekUsername->get_result();
-        if ($result->num_rows > 0) {
-            $message = "Username sudah digunakan oleh dokter lain!";
+        // Validasi username dengan regex (tidak boleh ada dua tanda minus berturut-turut)
+        if (!preg_match('/^(?!.*--)[a-zA-Z0-9-]+$/', $username)) {
+            $message = "Username tidak valid! Hindari penggunaan karakter khusus yang tidak diperbolehkan.";
             $type = "error";
         } else {
-            // Jika username belum ada, tambahkan data dokter
-            $stmt = $conn->prepare("INSERT INTO dokter (nama, alamat, no_hp, id_poli, username, password) 
-                                    VALUES (?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("ssssss", $nama, $alamat, $no_hp, $id_poli, $username, $password);
-            if ($stmt->execute()) {
-                $message = "Dokter berhasil ditambahkan!";
-                $type = "success";
-            } else {
-                $message = "Gagal menambahkan dokter: " . $conn->error;
+            // Cek apakah username sudah ada di database
+            $cekUsername = $conn->prepare("SELECT * FROM dokter WHERE username = ?");
+            $cekUsername->bind_param("s", $username);
+            $cekUsername->execute();
+            $result = $cekUsername->get_result();
+            if ($result->num_rows > 0) {
+                $message = "Username sudah digunakan oleh dokter lain!";
                 $type = "error";
+            } else {
+                // Jika username belum ada, tambahkan data dokter
+                $stmt = $conn->prepare("INSERT INTO dokter (nama, alamat, no_hp, id_poli, username, password) 
+                                        VALUES (?, ?, ?, ?, ?, ?)");
+                $stmt->bind_param("ssssss", $nama, $alamat, $no_hp, $id_poli, $username, $password);
+                if ($stmt->execute()) {
+                    $message = "Dokter berhasil ditambahkan!";
+                    $type = "success";
+                } else {
+                    $message = "Gagal menambahkan dokter: " . $conn->error;
+                    $type = "error";
+                }
             }
         }
     }
@@ -56,29 +62,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $username = $_POST['username'];
         $password = !empty($_POST['password']) ? password_hash($_POST['password'], PASSWORD_DEFAULT) : null;
 
-        // Cek apakah username sudah ada di database dan bukan milik dokter ini
-        $cekUsername = $conn->prepare("SELECT * FROM dokter WHERE username = ? AND id != ?");
-        $cekUsername->bind_param("si", $username, $id);
-        $cekUsername->execute();
-        $result = $cekUsername->get_result();
-        if ($result->num_rows > 0) {
-            $message = "Username sudah digunakan oleh dokter lain!";
+        // Validasi username dengan regex (tidak boleh ada dua tanda minus berturut-turut)
+        if (!preg_match('/^(?!.*--)[a-zA-Z0-9-]+$/', $username)) {
+            $message = "Username tidak valid! Hindari penggunaan karakter khusus yang tidak diperbolehkan.";
             $type = "error";
         } else {
-            // Jika username belum digunakan oleh dokter lain, lanjutkan update
-            if ($password) {
-                $stmt = $conn->prepare("UPDATE dokter SET nama=?, alamat=?, no_hp=?, id_poli=?, username=?, password=? WHERE id=?");
-                $stmt->bind_param("ssssssi", $nama, $alamat, $no_hp, $id_poli, $username, $password, $id);
-            } else {
-                $stmt = $conn->prepare("UPDATE dokter SET nama=?, alamat=?, no_hp=?, id_poli=?, username=? WHERE id=?");
-                $stmt->bind_param("sssssi", $nama, $alamat, $no_hp, $id_poli, $username, $id);
-            }
-            if ($stmt->execute()) {
-                $message = "Data dokter berhasil diperbarui!";
-                $type = "success";
-            } else {
-                $message = "Gagal memperbarui data dokter: " . $conn->error;
+            // Cek apakah username sudah ada di database dan bukan milik dokter ini
+            $cekUsername = $conn->prepare("SELECT * FROM dokter WHERE username = ? AND id != ?");
+            $cekUsername->bind_param("si", $username, $id);
+            $cekUsername->execute();
+            $result = $cekUsername->get_result();
+            if ($result->num_rows > 0) {
+                $message = "Username sudah digunakan oleh dokter lain!";
                 $type = "error";
+            } else {
+                // Jika username belum digunakan oleh dokter lain, lanjutkan update
+                if ($password) {
+                    $stmt = $conn->prepare("UPDATE dokter SET nama=?, alamat=?, no_hp=?, id_poli=?, username=?, password=? WHERE id=?");
+                    $stmt->bind_param("ssssssi", $nama, $alamat, $no_hp, $id_poli, $username, $password, $id);
+                } else {
+                    $stmt = $conn->prepare("UPDATE dokter SET nama=?, alamat=?, no_hp=?, id_poli=?, username=? WHERE id=?");
+                    $stmt->bind_param("sssssi", $nama, $alamat, $no_hp, $id_poli, $username, $id);
+                }
+                if ($stmt->execute()) {
+                    $message = "Data dokter berhasil diperbarui!";
+                    $type = "success";
+                } else {
+                    $message = "Gagal memperbarui data dokter: " . $conn->error;
+                    $type = "error";
+                }
             }
         }
     }
@@ -155,6 +167,7 @@ if (isset($_GET['ajax_search'])) {
     exit;
 }
 ?>
+
 
 
 <!DOCTYPE html>
@@ -281,8 +294,9 @@ if (isset($_GET['ajax_search'])) {
                                                     <input type="text" name="no_hp" class="form-control" value="<?= htmlspecialchars($row['no_hp']) ?>">
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label class="form-label">Poli</label>
-                                                    <select name="id_poli" class="form-control">
+                                                    <label for="poli" class="form-label">Pilih Poli:</label>
+                                                    <select name="id_poli" class="form-select">
+                                                        <option value="">Pilih Poli</option>
                                                         <?php
                                                         $poliDropdown = $conn->query("SELECT * FROM poli");
                                                         while ($poli = $poliDropdown->fetch_assoc()):
@@ -370,7 +384,7 @@ if (isset($_GET['ajax_search'])) {
                     icon: '<?= $type ?>',
                     title: '<?= $message ?>',
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 2000
                 });
             </script>
             <?php endif; ?>

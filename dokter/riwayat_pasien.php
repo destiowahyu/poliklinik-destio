@@ -198,7 +198,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                                 <td><?= htmlspecialchars($row['nama_poli']) ?></td>
                                 <td><?= htmlspecialchars($row['nama_dokter']) ?></td>
                                 <td>
-                                    <button class="btn btn-primary btn-sm" onclick="showDetails(<?= $row['id_daftar'] ?>)">
+                                    <button class="btn btn-primary btn-sm" style="border-radius: 30px; padding: 7px 20px;" onclick="showDetails(<?= $row['id_daftar'] ?>)">
                                         Detail
                                     </button>
                                 </td>
