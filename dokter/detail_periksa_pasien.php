@@ -5,6 +5,8 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'dokter') {
     exit();
 }
 
+$periksaPasien_page = 'periksa_pasien.php';
+
 include '../includes/db.php';
 
 // Ambil ID daftar_poli dari URL
@@ -137,40 +139,14 @@ $current_page = basename($_SERVER['PHP_SELF']);
     <link rel="icon" type="image/png" href="../assets/images/avatar-doctor.png">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
 </head>
 <body>
     <!-- Overlay -->
     <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
     <!-- Sidebar -->
-    <button class="toggle-btn" onclick="toggleSidebar()">
-        <i class="fas fa-bars"></i>
-    </button>
-    <div class="sidebar" id="sidebar">
-        <div class="avatar-container">
-            <h4 id="admin-panel">Dokter Panel</h4>
-            <img src="../assets/images/avatar-doctor.png" class="admin-avatar" alt="Admin">
-            <h6 id="admin-name"><?= htmlspecialchars($_SESSION['username']) ?></h6>
-        </div>
-        <a href="dashboard.php" class="<?php echo ($current_page == 'dashboard.php') ? 'active' : ''; ?>">
-            <i class="fas fa-chart-pie"></i> <span>Dashboard</span>
-        </a>
-        <a href="jadwal_periksa.php" class="<?php echo ($current_page == 'jadwal_periksa.php') ? 'active' : ''; ?>">
-            <i class="fas fa-calendar-alt"></i><span>Jadwal Periksa</span>
-        </a>
-        <a href="periksa_pasien.php" class="<?php echo ($current_page == 'periksa_pasien.php' || $current_page == 'detail_periksa_pasien.php') ? 'active' : ''; ?>">
-            <i class="fas fa-user-md"></i> <span>Periksa Pasien</span>
-        </a>
-        <a href="riwayat_pasien.php" class="<?php echo ($current_page == 'riwayat_pasien.php') ? 'active' : ''; ?>">
-            <i class="fas fa-history"></i> <span>Riwayat Pasien</span>
-        </a>
-        <a href="profil.php" class="<?php echo ($current_page == 'profil.php') ? 'active' : ''; ?>">
-            <i class="fas fa-user"></i> <span>Profil</span>
-        </a>
-        <a href="../logout.php" class="<?php echo ($current_page == 'logout.php') ? 'active' : ''; ?>">
-            <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
-        </a>
-    </div>
+    <?php include 'sidebar_dokter.php'; ?>
 
     <!-- Main Content -->
     <div class="content" id="content">
@@ -492,19 +468,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
         });
     });
 
-    function toggleSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
-        const content = document.getElementById('content');
 
-        if (window.innerWidth > 768) {
-            sidebar.classList.toggle('collapsed');
-            content.classList.toggle('collapsed');
-        } else {
-            sidebar.classList.toggle('open');
-            overlay.classList.toggle('show');
-        }
-    }
     </script>
 </body>
 </html>

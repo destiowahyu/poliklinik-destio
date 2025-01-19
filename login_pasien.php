@@ -4,27 +4,55 @@ include 'includes/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
-    $password = md5($_POST['password']);
+    $password = $_POST['password'];
 
     // Query untuk memeriksa username dan password
-    $query = "SELECT id, username FROM pasien WHERE username = ? AND password = ?";
+    $query = "SELECT id, username, password FROM pasien WHERE username = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("ss", $username, $password);
+    $stmt->bind_param("s", $username);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($result->num_rows === 1) {
         $row = $result->fetch_assoc();
-        $_SESSION['role'] = 'pasien';
-        $_SESSION['username'] = $row['username'];
-        $_SESSION['id'] = $row['id'];
-        header("Location: splash.php");
-        exit;
+        
+        // Jika password yang disimpan menggunakan MD5, periksa dengan MD5 terlebih dahulu
+        if (strlen($row['password']) === 32) { // MD5 panjangnya 32 karakter
+            if (md5($password) === $row['password']) {
+                // Jika cocok, ganti password dengan hash yang lebih aman
+                $new_hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                $updateQuery = "UPDATE pasien SET password = ? WHERE id = ?";
+                $updateStmt = $conn->prepare($updateQuery);
+                $updateStmt->bind_param("si", $new_hashed_password, $row['id']);
+                $updateStmt->execute();
+
+                // Set session dan arahkan ke halaman splash
+                $_SESSION['role'] = 'pasien';
+                $_SESSION['username'] = $row['username'];
+                $_SESSION['id'] = $row['id'];
+                header("Location: splash.php");
+                exit;
+            } else {
+                $error = "Username atau password salah.";
+            }
+        } else {
+            // Jika password sudah menggunakan hash yang aman, verifikasi dengan password_verify
+            if (password_verify($password, $row['password'])) {
+                $_SESSION['role'] = 'pasien';
+                $_SESSION['username'] = $row['username'];
+                $_SESSION['id'] = $row['id'];
+                header("Location: splash.php");
+                exit;
+            } else {
+                $error = "Username atau password salah.";
+            }
+        }
     } else {
         $error = "Username atau password salah.";
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

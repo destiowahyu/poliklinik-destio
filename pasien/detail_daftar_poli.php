@@ -5,7 +5,7 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'pasien') {
     exit();
 }
 
-$active_page = 'daftar_poli.php'; // Menandai halaman aktif sebagai "daftar_poli.php"
+$active_page = 'daftar_poli.php';
 
 include '../includes/db.php';
 
@@ -70,6 +70,7 @@ $result_obat = $stmt_obat->get_result();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/admin/styles.css">
     <link rel="icon" type="image/png" href="../assets/images/pasien.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
     <style>
     @media screen and (max-width: 767px) {
         /* Hide table headers */
@@ -124,6 +125,9 @@ $result_obat = $stmt_obat->get_result();
         </a>
         <a href="daftar_poli.php" class="<?php echo ($active_page == 'daftar_poli.php') ? 'active' : ''; ?>">
             <i class="fas fa-stethoscope"></i> <span>Daftar Poli</span>
+        </a>
+        <a href="konsultasi.php" class="<?php echo ($current_page == 'konsultasi.php') ? 'active' : ''; ?>">
+            <i class="fas fa-comments"></i> <span>Konsultasi</span>
         </a>
         <a href="profil.php" class="<?php echo ($current_page == 'profil.php') ? 'active' : ''; ?>">
             <i class="fas fa-user"></i> <span>Profil</span>

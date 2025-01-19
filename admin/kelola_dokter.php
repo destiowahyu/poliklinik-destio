@@ -13,7 +13,7 @@ include '../includes/db.php';
 $message = '';
 $type = '';
 
-//TAMBAH DATA DOKTER
+// TAMBAH DATA DOKTER
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['add'])) {
         $nama = $_POST['nama'];
@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $no_hp = $_POST['no_hp'];
         $id_poli = $_POST['id_poli'];
         $username = $_POST['username'];
-        $password = md5($_POST['password']);
+        $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Menggunakan password_hash
 
         // Cek apakah username sudah ada di database
         $cekUsername = $conn->prepare("SELECT * FROM dokter WHERE username = ?");
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    //EDIT DATA DOKTER
+    // EDIT DATA DOKTER
     if (isset($_POST['edit'])) {
         $id = $_POST['id'];
         $nama = $_POST['nama'];
@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $no_hp = $_POST['no_hp'];
         $id_poli = $_POST['id_poli'];
         $username = $_POST['username'];
-        $password = !empty($_POST['password']) ? md5($_POST['password']) : null;
+        $password = !empty($_POST['password']) ? password_hash($_POST['password'], PASSWORD_DEFAULT) : null;
 
         // Cek apakah username sudah ada di database dan bukan milik dokter ini
         $cekUsername = $conn->prepare("SELECT * FROM dokter WHERE username = ? AND id != ?");
@@ -83,6 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    // HAPUS DATA DOKTER
     if (isset($_POST['delete'])) {
         $id = $_POST['id'];
         $stmt = $conn->prepare("DELETE FROM dokter WHERE id=?");
@@ -154,6 +155,7 @@ if (isset($_GET['ajax_search'])) {
     exit;
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

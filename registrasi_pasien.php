@@ -37,8 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($check_ktp_result->num_rows > 0) {
         $error = "Nomor KTP sudah terdaftar.";
     } else {
-        // Then check username if KTP is unique
-        $check_username_query = "SELECT * FROM pasien WHERE username = ?";
+        // Then check username if KTP is unique, with BINARY for case-sensitivity
+        $check_username_query = "SELECT * FROM pasien WHERE BINARY username = ?";
         $check_username_stmt = $conn->prepare($check_username_query);
         $check_username_stmt->bind_param("s", $username);
         $check_username_stmt->execute();
@@ -61,6 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

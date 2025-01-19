@@ -38,7 +38,7 @@ function generateNoRM($conn) {
 
 $no_rm_generate = generateNoRM($conn);
 
-//TAMBAH DATA
+// TAMBAH DATA
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['add'])) {
         $nama = $_POST['nama'];
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $no_ktp = $_POST['no_ktp'];
         $no_hp = $_POST['no_hp'];
         $username = $_POST['username'];
-        $password = md5($_POST['password']);
+        $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Menggunakan password_hash()
 
         // Cek apakah username dan no KTP sudah ada di database
         $cekUsernameKTP = $conn->query("SELECT * FROM pasien WHERE username = '$username' OR no_ktp = '$no_ktp'");
@@ -96,19 +96,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $no_ktp = $_POST['no_ktp'];
         $no_hp = $_POST['no_hp'];
         $username = $_POST['username'];
-        $password = !empty($_POST['password']) ? md5($_POST['password']) : null;
-    
+        $password = !empty($_POST['password']) ? password_hash($_POST['password'], PASSWORD_DEFAULT) : null; // Menggunakan password_hash()
+
         // Ambil data saat ini dari database berdasarkan ID
         $currentDataQuery = $conn->query("SELECT * FROM pasien WHERE id = '$id'");
         if ($currentDataQuery->num_rows > 0) {
             $currentData = $currentDataQuery->fetch_assoc();
-    
+
             // Periksa apakah username atau no_ktp sudah digunakan oleh pasien lain
             $cekData = $conn->query("SELECT * FROM pasien WHERE (username = '$username' OR no_ktp = '$no_ktp') AND id != '$id'");
-    
+
             $usernameUsed = false;
             $ktpUsed = false;
-    
+
             while ($row = $cekData->fetch_assoc()) {
                 if ($row['username'] === $username && $username !== $currentData['username']) {
                     $usernameUsed = true;
@@ -117,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $ktpUsed = true;
                 }
             }
-    
+
             // Menentukan pesan error berdasarkan kondisi
             if ($usernameUsed && $ktpUsed) {
                 $errorMessage = "Username dan No KTP sudah digunakan oleh pasien lain!";
@@ -126,13 +126,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } elseif ($ktpUsed) {
                 $errorMessage = "No KTP sudah digunakan oleh pasien lain!";
             }
-    
+
             // Jika ada konflik, tampilkan error
             if ($usernameUsed || $ktpUsed) {
                 header("Location: kelola_pasien.php?message=error&info=" . urlencode($errorMessage));
                 exit();
             }
-    
+
             // Jika tidak ada konflik, lakukan update
             $passwordUpdate = $password ? ", password='$password'" : "";
             $result = $conn->query("UPDATE pasien SET 
@@ -143,7 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     username='$username' 
                                     $passwordUpdate 
                                     WHERE id='$id'");
-    
+
             if ($result) {
                 header("Location: kelola_pasien.php?message=success&info=" . urlencode("Pasien berhasil diperbarui!"));
                 exit();
@@ -205,10 +205,12 @@ if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQU
             </td>
         </tr>
     <?php endwhile;
-    echo ob_get_clean(); // Return only the buffered content
+    echo ob_get_clean(); 
     exit;
 }
+
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

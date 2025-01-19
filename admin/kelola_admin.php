@@ -6,14 +6,18 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
 }
 
 $current_page = basename($_SERVER['PHP_SELF']);
-
 include '../includes/db.php';
+
+$adminName = $_SESSION['username'];
 
 // Handle messages for notifications
 $message = '';
 $type = '';
 
-//TAMBAH DATA ADMIN
+
+
+
+// TAMBAH DATA ADMIN
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['add'])) {
         $username = $_POST['username'];
@@ -23,13 +27,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Verify current admin's password
         $admin_username = $_SESSION['username'];
-        $verify_admin = $conn->prepare("SELECT * FROM admin WHERE username = ? AND password = ?");
-        $hashed_current_password = md5($current_admin_password);
-        $verify_admin->bind_param("ss", $admin_username, $hashed_current_password);
+        $verify_admin = $conn->prepare("SELECT password FROM admin WHERE username = ?");
+        $verify_admin->bind_param("s", $admin_username);
         $verify_admin->execute();
-        $admin_result = $verify_admin->get_result();
+        $verify_admin->store_result();
+        $verify_admin->bind_result($hashed_current_password);
+        $verify_admin->fetch();
 
-        if ($admin_result->num_rows === 0) {
+        if (!$verify_admin->num_rows || !password_verify($current_admin_password, $hashed_current_password)) {
             $message = "Password admin saat ini salah!";
             $type = "error";
         } else if ($password !== $confirm_password) {
@@ -37,18 +42,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $type = "error";
         } else {
             // Cek apakah username sudah ada di database
-            $cekUsername = $conn->prepare("SELECT * FROM admin WHERE username = ?");
+            $cekUsername = $conn->prepare("SELECT id FROM admin WHERE BINARY username = ?");
             $cekUsername->bind_param("s", $username);
             $cekUsername->execute();
-            $result = $cekUsername->get_result();
-            if ($result->num_rows > 0) {
+            $cekUsername->store_result();
+
+            if ($cekUsername->num_rows > 0) {
                 $message = "Username sudah digunakan!";
                 $type = "error";
             } else {
                 // Jika username belum ada, tambahkan data admin
-                $hashed_password = md5($password);
+                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
                 $stmt = $conn->prepare("INSERT INTO admin (username, password) VALUES (?, ?)");
                 $stmt->bind_param("ss", $username, $hashed_password);
+
                 if ($stmt->execute()) {
                     $message = "Admin berhasil ditambahkan!";
                     $type = "success";
@@ -60,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    //EDIT DATA ADMIN
+    // EDIT DATA ADMIN
     if (isset($_POST['edit'])) {
         $id = $_POST['id'];
         $username = $_POST['username'];
@@ -70,13 +77,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Verify current admin's password
         $admin_username = $_SESSION['username'];
-        $verify_admin = $conn->prepare("SELECT * FROM admin WHERE username = ? AND password = ?");
-        $hashed_current_password = md5($current_admin_password);
-        $verify_admin->bind_param("ss", $admin_username, $hashed_current_password);
+        $verify_admin = $conn->prepare("SELECT password FROM admin WHERE BINARY username = ?");
+        $verify_admin->bind_param("s", $admin_username);
         $verify_admin->execute();
-        $admin_result = $verify_admin->get_result();
+        $verify_admin->store_result();
+        $verify_admin->bind_result($hashed_current_password);
+        $verify_admin->fetch();
 
-        if ($admin_result->num_rows === 0) {
+        if (!$verify_admin->num_rows || !password_verify($current_admin_password, $hashed_current_password)) {
             $message = "Password admin saat ini salah!";
             $type = "error";
         } else if (!empty($password) && $password !== $confirm_password) {
@@ -84,23 +92,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $type = "error";
         } else {
             // Cek apakah username sudah ada di database dan bukan milik admin ini
-            $cekUsername = $conn->prepare("SELECT * FROM admin WHERE username = ? AND id != ?");
+            $cekUsername = $conn->prepare("SELECT id FROM admin WHERE username = ? AND id != ?");
             $cekUsername->bind_param("si", $username, $id);
             $cekUsername->execute();
-            $result = $cekUsername->get_result();
-            if ($result->num_rows > 0) {
+            $cekUsername->store_result();
+
+            if ($cekUsername->num_rows > 0) {
                 $message = "Username sudah digunakan oleh admin lain!";
                 $type = "error";
             } else {
                 // Jika username belum digunakan oleh admin lain, lanjutkan update
                 if (!empty($password)) {
-                    $hashed_password = md5($password);
+                    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
                     $stmt = $conn->prepare("UPDATE admin SET username=?, password=? WHERE id=?");
                     $stmt->bind_param("ssi", $username, $hashed_password, $id);
                 } else {
                     $stmt = $conn->prepare("UPDATE admin SET username=? WHERE id=?");
                     $stmt->bind_param("si", $username, $id);
                 }
+
                 if ($stmt->execute()) {
                     $message = "Data admin berhasil diperbarui!";
                     $type = "success";
@@ -112,19 +122,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    // DELETE ADMIN
     if (isset($_POST['delete'])) {
         $id = $_POST['id'];
         $current_admin_password = $_POST['current_admin_password'];
 
         // Verify current admin's password
         $admin_username = $_SESSION['username'];
-        $verify_admin = $conn->prepare("SELECT * FROM admin WHERE username = ? AND password = ?");
-        $hashed_current_password = md5($current_admin_password);
-        $verify_admin->bind_param("ss", $admin_username, $hashed_current_password);
+        $verify_admin = $conn->prepare("SELECT password FROM admin WHERE username = ?");
+        $verify_admin->bind_param("s", $admin_username);
         $verify_admin->execute();
-        $admin_result = $verify_admin->get_result();
+        $verify_admin->store_result();
+        $verify_admin->bind_result($hashed_current_password);
+        $verify_admin->fetch();
 
-        if ($admin_result->num_rows === 0) {
+        if (!$verify_admin->num_rows || !password_verify($current_admin_password, $hashed_current_password)) {
             $message = "Password admin saat ini salah!";
             $type = "error";
         } else {
@@ -153,36 +165,8 @@ $adminList = $stmt->get_result();
 if (!$adminList) {
     die("Query gagal: " . $conn->error);
 }
-
-$adminName = $_SESSION['username'];
-
-// AJAX search handler
-if (isset($_GET['ajax_search'])) {
-    $search = $_GET['ajax_search'];
-    $query = "SELECT * FROM admin WHERE username LIKE ?";
-    $stmt = $conn->prepare($query);
-    $searchParam = "%$search%";
-    $stmt->bind_param("s", $searchParam);
-    $stmt->execute();
-    $adminList = $stmt->get_result();
-
-    $no = 1;
-    while ($row = $adminList->fetch_assoc()):
-        echo "<tr>
-                <td>" . $no++ . "</td>
-                <td>" . $row['id'] . "</td>
-                <td>" . htmlspecialchars($row['username']) . "</td>
-                <td>
-                    <div class='tombol-aksi'>
-                        <button class='btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#editAdminModal" . $row['id'] . "'>Edit</button>
-                        <button class='btn btn-danger btn-sm' data-bs-toggle='modal' data-bs-target='#deleteConfirmationModal' data-admin-id='" . $row['id'] . "'>Hapus</button>
-                    </div>
-                </td>
-            </tr>";
-    endwhile;
-    exit;
-}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

@@ -4,35 +4,60 @@ require 'includes/db.php'; // Koneksi ke database
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
-    $password = md5($_POST['password']); // Hash password menggunakan MD5
+    $password = $_POST['password'];
 
     // Cek Admin
-    $query = "SELECT * FROM admin WHERE username = '$username' AND password = '$password'";
-    $result = mysqli_query($conn, $query);
-    if (mysqli_num_rows($result) > 0) {
-        $admin = mysqli_fetch_assoc($result);
-        $_SESSION['role'] = 'admin';
-        $_SESSION['username'] = $admin['username'];
-        $_SESSION['id'] = $admin['id']; // Menyimpan ID admin
-        header("Location: splash.php");
-        exit;
+    $query = "SELECT * FROM admin WHERE username = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $admin = $result->fetch_assoc();
+        // Cek apakah password disimpan menggunakan password_hash()
+        if (password_verify($password, $admin['password'])) {
+            $_SESSION['role'] = 'admin';
+            $_SESSION['username'] = $admin['username'];
+            $_SESSION['id'] = $admin['id']; // Menyimpan ID admin
+            header("Location: splash.php");
+            exit;
+        }
     }
 
-    // Cek Dokter
-    $query = "SELECT * FROM dokter WHERE username = '$username' AND password = '$password'";
-    $result = mysqli_query($conn, $query);
-    if (mysqli_num_rows($result) > 0) {
-        $dokter = mysqli_fetch_assoc($result);
-        $_SESSION['role'] = 'dokter';
-        $_SESSION['username'] = $dokter['username'];
-        $_SESSION['id'] = $dokter['id']; // Menyimpan ID dokter
-        header("Location: splash.php");
-        exit;
-    }
+        // Cek Dokter
+        $query = "SELECT * FROM dokter WHERE username = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        if ($result->num_rows > 0) {
+            $dokter = $result->fetch_assoc();
+            
+            // Verifikasi password menggunakan password_verify()
+            if (password_verify($password, $dokter['password'])) {
+                $_SESSION['role'] = 'dokter';
+                $_SESSION['username'] = $dokter['username'];
+                $_SESSION['id'] = $dokter['id']; // Menyimpan ID dokter
+                header("Location: splash.php");
+                exit;
+            } else {
+                $error = "Username atau password salah!";
+            }
+        } else {
+            $error = "Username atau password salah!";
+        }
 
+
+
+    // Jika username dan password salah
     $error = "Username atau password salah!";
 }
 ?>
+
+
+
 
 
 <!doctype html>

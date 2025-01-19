@@ -12,7 +12,7 @@
 <body>
     <div class="landing-container">
         <div class="landing-card">
-            <img src="assets/images/doctor-icon.png" alt="Dokter Icon">
+            <img src="assets/images/logodestio.png" alt="Dokter Icon">
             <h1>SISTEM POLIKLINIK</h1>
             <p>Silakan pilih login sebagai Dokter atau Pasien untuk melanjutkan.</p>
             <a href="login_dokter.php" class="btn btn-primary">Login Dokter →</a>
