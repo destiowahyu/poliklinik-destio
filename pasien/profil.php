@@ -68,6 +68,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="../assets/css/admin/styles.css">
     <link rel="icon" type="image/png" href="../assets/images/pasien.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <!-- Bootstrap Icons CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HoAqzM0Ll3xdCEaOfhccTd36SpzvoD6B0T3OOcDjfGgDkXp24FdQYvpB3nsTmFCy" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         .password-container {
             position: relative;
@@ -102,31 +107,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
     <!-- Sidebar -->
-    <button class="toggle-btn" onclick="toggleSidebar()">
-        <i class="fas fa-bars"></i>
-    </button>
-    <div class="sidebar" id="sidebar">
-    <div class="avatar-container">
-        <h4 id="admin-panel">Pasien Panel</h4>
-        <img src="../assets/images/pasien.png" class="admin-avatar" alt="Admin">
-        <h6 id="admin-name"><?= htmlspecialchars($pasienName) ?></h6>
-    </div>
-        <a href="dashboard.php" class="<?php echo ($current_page == 'dashboard.php') ? 'active' : ''; ?>">
-            <i class="fas fa-chart-pie"></i> <span>Dashboard</span>
-        </a>
-        <a href="daftar_poli.php" class="<?php echo ($current_page == 'daftar_poli.php') ? 'active' : ''; ?>">
-            <i class="fas fa-stethoscope"></i> <span>Daftar Poli</span>
-        </a>
-        <a href="konsultasi.php" class="<?php echo ($current_page == 'konsultasi.php') ? 'active' : ''; ?>">
-            <i class="fas fa-comments"></i> <span>Konsultasi</span>
-        </a>
-        <a href="profil.php" class="<?php echo ($current_page == 'profil.php') ? 'active' : ''; ?>">
-            <i class="fas fa-user"></i> <span>Profil</span>
-        </a>
-        <a href="../logout.php" class="<?php echo ($current_page == 'logout.php') ? 'active' : ''; ?>">
-            <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
-        </a>
-    </div>
+    <?php include 'sidebar_pasien.php'; ?>
 
     <!-- Main Content -->
     <div class="content" id="content">
@@ -179,9 +160,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             </div>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">
-                        Edit Profil
+                    <button type="button" class="btn btn-primary py-2" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                        <i class="fas fa-user-edit"></i> Edit Profil
                     </button>
+                    
                 </div>
             </div>
         </div>
@@ -254,44 +236,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
-            const content = document.getElementById('content');
-
-            if (window.innerWidth > 768) {
-                sidebar.classList.toggle('collapsed');
-                content.classList.toggle('collapsed');
-            } else {
-                sidebar.classList.toggle('open');
-                overlay.classList.toggle('show');
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const sidebar = document.getElementById('sidebar');
-            if (window.innerWidth > 768) {
-                sidebar.classList.remove('open');
-            } else {
-                sidebar.classList.add('hidden');
-            }
-        });
-
-        function togglePasswordVisibility(fieldId) {
-            const passwordField = document.getElementById(fieldId);
-            const icon = passwordField.nextElementSibling;
-            
-            if (passwordField.type === "password") {
-                passwordField.type = "text";
-                icon.classList.remove("fa-eye");
-                icon.classList.add("fa-eye-slash");
-            } else {
-                passwordField.type = "password";
-                icon.classList.remove("fa-eye-slash");
-                icon.classList.add("fa-eye");
-            }
-        }
-    </script>
 </body>
 </html>

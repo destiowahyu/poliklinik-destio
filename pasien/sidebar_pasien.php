@@ -1,12 +1,7 @@
 <?php
-// Ambil data admin dari sesi
-$adminName = $_SESSION['username'];
-$adminData = $conn->query("SELECT * FROM admin WHERE username = '$adminName'")->fetch_assoc();
 
-// Ambil ID admin dan username dari session
-$adminId = $_SESSION['id'];
-$adminUsername = $_SESSION['username'];
 ?>
+
 
 <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
@@ -15,40 +10,32 @@ $adminUsername = $_SESSION['username'];
     <i class="fas fa-bars"></i>
 </button>
 
-
-<!-- Sidebar -->
-<div class="sidebar" id="sidebar">
-<button class="toggle-btn" onclick="toggleSidebar()">
-    <i class="fas fa-bars"></i>
-</button>
-    <div class="avatar-container">
-        <h4 id="admin-panel">Admin Panel</h4>
-        <img src="../assets/images/admin.png" class="admin-avatar" alt="Admin">
-        <h6 id="admin-name"><?= htmlspecialchars($adminName) ?></h6>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <button class="toggle-btn" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="avatar-container">
+            <h4 id="admin-panel">Pasien Panel</h4>
+            <img src="../assets/images/pasien.png" class="admin-avatar" alt="Admin">
+            <h6 id="admin-name"><?= htmlspecialchars($pasienName) ?></h6>
+        </div>
+        <a href="dashboard.php" class="<?php echo ($current_page == 'dashboard.php') ? 'active' : ''; ?>">
+            <i class="fas fa-chart-pie"></i> <span>Dashboard</span>
+        </a>
+        <a href="daftar_poli.php" class="<?php echo ($current_page == 'daftar_poli.php') ? 'active' : ''; ?>">
+            <i class="fas fa-stethoscope"></i> <span>Daftar Poli</span>
+        </a>
+        <a href="konsultasi.php" class="<?php echo ($current_page == 'konsultasi.php') ? 'active' : ''; ?>">
+            <i class="fas fa-comments"></i> <span>Konsultasi</span>
+        </a>
+        <a href="profil.php" class="<?php echo ($current_page == 'profil.php') ? 'active' : ''; ?>">
+            <i class="fas fa-user"></i> <span>Profil</span>
+        </a>
+        <a href="../logout.php" class="<?php echo ($current_page == 'logout.php') ? 'active' : ''; ?>">
+            <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+        </a>
     </div>
-    <a href="dashboard.php" class="<?php echo ($current_page == 'dashboard.php') ? 'active' : ''; ?>">
-        <i class="fas fa-chart-pie"></i> <span>Dashboard</span>
-    </a>
-    <a href="kelola_pasien.php" class="<?php echo ($current_page == 'kelola_pasien.php') ? 'active' : ''; ?>">
-        <i class="fas fa-users"></i> <span>Kelola Pasien</span>
-    </a>
-    <a href="kelola_dokter.php" class="<?php echo ($current_page == 'kelola_dokter.php') ? 'active' : ''; ?>">
-        <i class="fas fa-user-md"></i> <span>Kelola Dokter</span>
-    </a>
-    <a href="kelola_poli.php" class="<?php echo ($current_page == 'kelola_poli.php') ? 'active' : ''; ?>">
-        <i class="fas fa-hospital"></i> <span>Kelola Poli</span>
-    </a>
-    <a href="kelola_obat.php" class="<?php echo ($current_page == 'kelola_obat.php') ? 'active' : ''; ?>">
-        <i class="fas fa-pills"></i> <span>Kelola Obat</span>
-    </a>
-    <a href="kelola_admin.php" class="<?php echo ($current_page == 'kelola_admin.php') ? 'active' : ''; ?>">
-        <i class="fas fa-user-shield"></i> <span>Kelola Admin</span>
-    </a>
-    <a href="../logout.php" class="<?php echo ($current_page == 'logout.php') ? 'active' : ''; ?>">
-        <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
-    </a>
-</div>
-
 
 <script>
     function toggleSidebar() {
@@ -108,4 +95,5 @@ $adminUsername = $_SESSION['username'];
             }
         }
     });
+
 </script>

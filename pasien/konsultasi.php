@@ -170,36 +170,18 @@ $result_riwayat = $stmt_riwayat->get_result();
     <link rel="stylesheet" href="../assets/css/admin/styles.css">
     <link rel="icon" type="image/png" href="../assets/images/pasien.png">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <!-- Bootstrap Icons CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HoAqzM0Ll3xdCEaOfhccTd36SpzvoD6B0T3OOcDjfGgDkXp24FdQYvpB3nsTmFCy" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
     <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
     <!-- Sidebar -->
-    <button class="toggle-btn" onclick="toggleSidebar()">
-        <i class="fas fa-bars"></i>
-    </button>
-    <div class="sidebar" id="sidebar">
-        <div class="avatar-container">
-            <h4 id="admin-panel">Pasien Panel</h4>
-            <img src="../assets/images/pasien.png" class="admin-avatar" alt="Pasien">
-            <h6 id="admin-name"><?= htmlspecialchars($pasienName) ?></h6>
-        </div>
-        <a href="dashboard.php" class="<?php echo ($current_page == 'dashboard.php') ? 'active' : ''; ?>">
-            <i class="fas fa-chart-pie"></i> <span>Dashboard</span>
-        </a>
-        <a href="daftar_poli.php" class="<?php echo ($current_page == 'daftar_poli.php') ? 'active' : ''; ?>">
-            <i class="fas fa-stethoscope"></i> <span>Daftar Poli</span>
-        </a>
-        <a href="konsultasi.php" class="<?php echo ($current_page == 'konsultasi.php') ? 'active' : ''; ?>">
-            <i class="fas fa-comments"></i> <span>Konsultasi</span>
-        </a>
-        <a href="profil.php" class="<?php echo ($current_page == 'profil.php') ? 'active' : ''; ?>">
-            <i class="fas fa-user"></i> <span>Profil</span>
-        </a>
-        <a href="../logout.php" class="<?php echo ($current_page == 'logout.php') ? 'active' : ''; ?>">
-            <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
-        </a>
-    </div>
+    <?php include 'sidebar_pasien.php'; ?>
 
     <!-- Main Content -->
     <div class="content" id="content">
@@ -242,10 +224,10 @@ $result_riwayat = $stmt_riwayat->get_result();
                     <label for="pertanyaan" class="form-label">Pertanyaan:</label>
                     <textarea name="pertanyaan" id="pertanyaan" class="form-control" rows="4" required></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary">Kirim Konsultasi</button>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-send"></i> Kirim Konsultasi</button> 
             </form>
 
-            <h2 class="mb-4">Riwayat Konsultasi</h2>
+            <h1 class="mb-4">Daftar Riwayat Konsultasi</h1>
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -269,7 +251,9 @@ $result_riwayat = $stmt_riwayat->get_result();
                             <td><?php echo htmlspecialchars($row['nama_poli']); ?></td>
                             <td><?php echo htmlspecialchars($row['nama_dokter']); ?></td>
                             <td><?php echo htmlspecialchars($row['subject']); ?></td>
-                            <td><?php echo $row['jawaban'] ? '<span class="badge bg-success">Terjawab</span>' : '<span class="badge bg-warning text-dark">Menunggu</span>'; ?></td>
+                            <td><?php echo $row['jawaban'] ? 
+                            '<span class="badge" style="background-color:rgb(45, 165, 43); color: #fff; border-radius: 20px; padding: 10px;">Terjawab <i class="bi bi-check2-all"></i></span>' : 
+                            '<span class="badge" style="background-color:rgb(242, 228, 29); color: rgb(51, 51, 51); border-radius: 20px; padding: 10px;">Menunggu 🕗</span>'; ?></td>
                             <td>
                                 <button class="btn btn-warning btn-sm me-1" onclick="editKonsultasi(<?php echo $row['id']; ?>)">Edit</button>
                                 <button class="btn btn-danger btn-sm me-1" onclick="deleteKonsultasi(<?php echo $row['id']; ?>)">Hapus</button>
@@ -332,19 +316,6 @@ $result_riwayat = $stmt_riwayat->get_result();
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
-            const content = document.getElementById('content');
-
-            if (window.innerWidth > 768) {
-                sidebar.classList.toggle('collapsed');
-                content.classList.toggle('collapsed');
-            } else {
-                sidebar.classList.toggle('open');
-                overlay.classList.toggle('show');
-            }
-        }
 
         $(document).ready(function() {
             $('#poli').change(function() {

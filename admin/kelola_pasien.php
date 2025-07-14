@@ -227,40 +227,8 @@ if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQU
 </head>
 <body>
     <!-- Overlay -->
-    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
-
     <!-- Sidebar -->
-    <button class="toggle-btn" onclick="toggleSidebar()">
-        <i class="fas fa-bars"></i>
-    </button>
-    <div class="sidebar" id="sidebar">
-    <div class="avatar-container">
-        <h4 id="admin-panel">Admin Panel</h4>
-        <img src="../assets/images/admin.png" class="admin-avatar" alt="Admin">
-        <h6 id="admin-name"><?= htmlspecialchars($adminName) ?></h6>
-    </div>
-        <a href="dashboard.php" class="<?php echo ($current_page == 'dashboard.php') ? 'active' : ''; ?>">
-            <i class="fas fa-chart-pie"></i> <span>Dashboard</span>
-        </a>
-        <a href="kelola_dokter.php" class="<?php echo ($current_page == 'kelola_dokter.php') ? 'active' : ''; ?>">
-            <i class="fas fa-user-md"></i> <span>Kelola Dokter</span>
-        </a>
-        <a href="kelola_pasien.php" class="<?php echo ($current_page == 'kelola_pasien.php') ? 'active' : ''; ?>">
-            <i class="fas fa-users"></i> <span>Kelola Pasien</span>
-        </a>
-        <a href="kelola_poli.php" class="<?php echo ($current_page == 'kelola_poli.php') ? 'active' : ''; ?>">
-            <i class="fas fa-hospital"></i> <span>Kelola Poli</span>
-        </a>
-        <a href="kelola_obat.php" class="<?php echo ($current_page == 'kelola_obat.php') ? 'active' : ''; ?>">
-            <i class="fas fa-pills"></i> <span>Kelola Obat</span>
-        </a>
-        <a href="kelola_admin.php" class="<?php echo ($current_page == 'kelola_admin.php') ? 'active' : ''; ?>">
-            <i class="fas fa-user-shield"></i> <span>Kelola Admin</span>
-        </a>
-        <a href="../logout.php" class="<?php echo ($current_page == 'logout.php') ? 'active' : ''; ?>">
-            <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
-        </a>
-    </div>
+    <?php include 'sidebar_admin.php'; ?>
 
     <!-- Main Content -->
     <div class="content" id="content">
@@ -430,30 +398,6 @@ if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQU
         
 
         <script>
-            function toggleSidebar() {
-                const sidebar = document.getElementById('sidebar');
-                const overlay = document.getElementById('overlay');
-                const content = document.getElementById('content');
-
-                if (window.innerWidth > 768) {
-                    sidebar.classList.toggle('collapsed');
-                    content.classList.toggle('collapsed');
-                } else {
-                    sidebar.classList.toggle('open');
-                    overlay.classList.toggle('show');
-                }
-            }
-
-            // Default sidebar state on load
-            document.addEventListener('DOMContentLoaded', function () {
-                const sidebar = document.getElementById('sidebar');
-                if (window.innerWidth > 768) {
-                    sidebar.classList.remove('open');
-                } else {
-                    sidebar.classList.add('hidden');
-                }
-            });
-
             // Real-time search
             document.addEventListener('DOMContentLoaded', function() {
                 const searchInput = document.getElementById('searchInput');

@@ -71,6 +71,11 @@ $result_obat = $stmt_obat->get_result();
     <link rel="stylesheet" href="../assets/css/admin/styles.css">
     <link rel="icon" type="image/png" href="../assets/images/pasien.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <!-- Bootstrap Icons CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HoAqzM0Ll3xdCEaOfhccTd36SpzvoD6B0T3OOcDjfGgDkXp24FdQYvpB3nsTmFCy" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <style>
     @media screen and (max-width: 767px) {
         /* Hide table headers */
@@ -166,9 +171,9 @@ $result_obat = $stmt_obat->get_result();
         <th>Status</th>
         <td data-label="Status">
             <?php if ($detail['status'] === 'Belum Diperiksa'): ?>
-                <span style="font-weight: bold; color: red;">&#10060; Belum diperiksa</span>
+                <span class="badge" style="background-color:rgb(233, 71, 71); color: rgb(255, 255, 255); border-radius: 20px; padding: 10px;">Belum Diperiksa <i class="bi bi-x-lg"></i></span>
             <?php else: ?>
-                <span style="font-weight: bold; color: green;">&#9989; Sudah diperiksa</span>
+                <span class="badge" style="background-color:rgb(45, 165, 43); color: #fff; border-radius: 20px; padding: 10px;">Sudah Diperiksa <i class="bi bi-check2-all"></i></span>
             <?php endif; ?>
         </td>
     </tr>
@@ -187,61 +192,73 @@ $result_obat = $stmt_obat->get_result();
 </table>
 
             <h1 class="mt-5 text-center">Daftar Obat yang Diresepkan</h1>
-            <table class="table table-bordered mt-3">
-                <thead>
-                    <tr>
-                        <th>Nama Obat</th>
-                        <th>Kemasan</th>
-                        <th>Harga</th>
-                        <th>Jumlah</th>
-                        <th>Subtotal</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php 
-                    $total_obat = 0;
-                    if ($result_obat->num_rows > 0): 
-                        while ($row = $result_obat->fetch_assoc()): 
-                            $subtotal = $row['harga'] * $row['jumlah'];
-                            $total_obat += $subtotal;
-                    ?>
-                        <tr>
-                            <td data-label="Nama Obat"><?php echo htmlspecialchars($row['nama_obat']); ?></td>
-                            <td data-label="Kemasan"><?php echo htmlspecialchars($row['kemasan']); ?></td>
-                            <td data-label="Harga">Rp <?php echo number_format($row['harga'], 0, ',', '.'); ?></td>
-                            <td data-label="Jumlah"><?php echo htmlspecialchars($row['jumlah']); ?></td>
-                            <td data-label="Subtotal">Rp <?php echo number_format($subtotal, 0, ',', '.'); ?></td>
-                        </tr>
-                    <?php 
-                        endwhile; 
-                    else: 
-                    ?>
-                        <tr>
-                            <td colspan="5" class="text-center">Tidak ada obat yang diresepkan.</td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-
-            <?php
-            $biaya_periksa = 150000;
-            $total_biaya = $biaya_periksa + $total_obat;
+<?php if ($detail['status'] === 'Belum Diperiksa'): ?>
+    <div class="alert alert-dark mt-3" role="alert">
+        Pasien belum diperiksa. Belum ada obat yang diresepkan.
+    </div>
+<?php else: ?>
+    <table class="table table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>Nama Obat</th>
+                <th>Kemasan</th>
+                <th>Harga</th>
+                <th>Jumlah</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php 
+            $total_obat = 0;
+            if ($result_obat->num_rows > 0): 
+                while ($row = $result_obat->fetch_assoc()): 
+                    $subtotal = $row['harga'] * $row['jumlah'];
+                    $total_obat += $subtotal;
             ?>
+                <tr>
+                    <td data-label="Nama Obat"><?php echo htmlspecialchars($row['nama_obat']); ?></td>
+                    <td data-label="Kemasan"><?php echo htmlspecialchars($row['kemasan']); ?></td>
+                    <td data-label="Harga">Rp <?php echo number_format($row['harga'], 0, ',', '.'); ?></td>
+                    <td data-label="Jumlah"><?php echo htmlspecialchars($row['jumlah']); ?></td>
+                    <td data-label="Subtotal">Rp <?php echo number_format($subtotal, 0, ',', '.'); ?></td>
+                </tr>
+            <?php 
+                endwhile; 
+            else: 
+            ?>
+                <tr>
+                    <td colspan="5" class="text-center">Tidak ada obat yang diresepkan.</td>
+                </tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+<?php endif; ?>
+
             <h1 class="mt-5 text-center">Rincian Biaya</h1>
-            <table class="table table-bordered mt-3">
-                <tr>
-                    <th>Biaya Periksa</th>
-                    <td data-label="Biaya Periksa">Rp <?php echo number_format($biaya_periksa, 0, ',', '.'); ?></td>
-                </tr>
-                <tr>
-                    <th>Biaya Obat</th>
-                    <td data-label="Biaya Obat">Rp <?php echo number_format($total_obat, 0, ',', '.'); ?></td>
-                </tr>
-                <tr>
-                    <th>Total Biaya</th>
-                    <td data-label="Total Biaya">Rp <?php echo number_format($total_biaya, 0, ',', '.'); ?></td>
-                </tr>
-            </table>
+<?php if ($detail['status'] === 'Belum Diperiksa'): ?>
+    <div class="alert alert-dark mt-3" role="alert">
+        Pasien belum diperiksa. Belum ada biaya periksa.
+    </div>
+<?php else: ?>
+    <?php
+    $biaya_periksa = $detail['biaya_periksa'] ?? 150000; // Use the actual biaya_periksa if available
+    $total_biaya = $biaya_periksa + $total_obat;
+    ?>
+    <table class="table table-bordered mt-3">
+        <tr>
+            <th>Biaya Periksa</th>
+            <td data-label="Biaya Periksa">Rp <?php echo number_format($biaya_periksa, 0, ',', '.'); ?></td>
+        </tr>
+        <tr>
+            <th>Biaya Obat</th>
+            <td data-label="Biaya Obat">Rp <?php echo number_format($total_obat, 0, ',', '.'); ?></td>
+        </tr>
+        <tr>
+            <th>Total Biaya</th>
+            <td data-label="Total Biaya">Rp <?php echo number_format($total_biaya, 0, ',', '.'); ?></td>
+        </tr>
+    </table>
+<?php endif; ?>
 
             <a href="daftar_poli.php" class="btn btn-primary mt-3">Kembali</a>
         </div>

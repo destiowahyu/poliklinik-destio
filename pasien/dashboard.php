@@ -33,8 +33,17 @@ $waktuPeriksa = $conn->query("
     LIMIT 1
 ")->fetch_assoc();
 
-?>
+// Ambil riwayat konsultasi terakhir
+$konsultasiTerakhir = $conn->query("
+    SELECT k.id, k.subject, k.pertanyaan, k.jawaban, k.tgl_konsultasi, d.nama AS nama_dokter
+    FROM konsultasi k
+    JOIN dokter d ON k.id_dokter = d.id
+    WHERE k.id_pasien = '{$pasienData['id']}'
+    ORDER BY k.tgl_konsultasi DESC
+    LIMIT 1
+")->fetch_assoc();
 
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -47,36 +56,17 @@ $waktuPeriksa = $conn->query("
     <link rel="stylesheet" href="../assets/css/admin/styles.css">
     <link rel="icon" type="image/png" href="../assets/images/pasien.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <!-- Bootstrap Icons CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HoAqzM0Ll3xdCEaOfhccTd36SpzvoD6B0T3OOcDjfGgDkXp24FdQYvpB3nsTmFCy" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
-    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+    
 
     <!-- Sidebar -->
-    <button class="toggle-btn" onclick="toggleSidebar()">
-        <i class="fas fa-bars"></i>
-    </button>
-    <div class="sidebar" id="sidebar">
-    <div class="avatar-container">
-        <h4 id="admin-panel">Pasien Panel</h4>
-        <img src="../assets/images/pasien.png" class="admin-avatar" alt="Admin">
-        <h6 id="admin-name"><?= htmlspecialchars($pasienName) ?></h6>
-    </div>
-        <a href="dashboard.php" class="<?php echo ($current_page == 'dashboard.php') ? 'active' : ''; ?>">
-            <i class="fas fa-chart-pie"></i> <span>Dashboard</span>
-        </a>
-        <a href="daftar_poli.php" class="<?php echo ($current_page == 'daftar_poli.php') ? 'active' : ''; ?>">
-            <i class="fas fa-stethoscope"></i> <span>Daftar Poli</span>
-        </a>
-        <a href="konsultasi.php" class="<?php echo ($current_page == 'konsultasi.php') ? 'active' : ''; ?>">
-            <i class="fas fa-comments"></i> <span>Konsultasi</span>
-        </a>
-        <a href="profil.php" class="<?php echo ($current_page == 'profil.php') ? 'active' : ''; ?>">
-            <i class="fas fa-user"></i> <span>Profil</span>
-        </a>
-        <a href="../logout.php" class="<?php echo ($current_page == 'logout.php') ? 'active' : ''; ?>">
-            <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
-        </a>
-    </div>
+    <?php include 'sidebar_pasien.php'; ?>
 
     <!-- Main Content -->
     <div class="content" id="content">
@@ -100,45 +90,44 @@ $waktuPeriksa = $conn->query("
             </div>
             <div class="col-md-6 mb-4">
                 <div class="card-pasien p-3">
-                    <h5>Riwayat Pendaftaran Terakhir</h5>
+                    <h5>Riwayat Daftar Poli Terakhir</h5>
                     <?php if ($riwayatTerakhir): ?>
                         <p><strong>Tanggal Daftar</strong> : <?= htmlspecialchars($riwayatTerakhir['tanggal_daftar']) ?></p>
                         <p><strong>Dokter</strong> : <?= htmlspecialchars($riwayatTerakhir['nama_dokter']) ?></p>
                         <p><strong>Poli</strong> : <?= htmlspecialchars($riwayatTerakhir['nama_poli']) ?></p>
                         <p><strong>Keluhan</strong> : <?= htmlspecialchars($riwayatTerakhir['keluhan']) ?></p>
                         <p><strong>Status</strong> : <?= htmlspecialchars($riwayatTerakhir['status']) ?></p>
-                        <p><strong>Waktu Diperiksa</strong> : <?= htmlspecialchars($waktuPeriksa['tgl_periksa']) ?></p>
+                        <p><strong>Waktu Diperiksa</strong> : <?= htmlspecialchars($waktuPeriksa['tgl_periksa'] ?? 'Belum diperiksa') ?></p>
                     <?php else: ?>
                         <p>Belum ada riwayat pendaftaran.</p>
                     <?php endif; ?>
                 </div>
             </div>
         </div>
+        <div class="row justify-content-center align-items-center">
+            <div class="col-md-12 mb-4" style="max-width: 550px;"> 
+                <div class="card-pasien p-3">
+                    <h5>Riwayat Konsultasi Terakhir</h5>
+                    <?php if ($konsultasiTerakhir): ?>
+                        <p>
+                            <?= $konsultasiTerakhir['jawaban'] 
+                                ? '<span class="badge" style="background-color:rgb(45, 165, 43); color: #fff;">Terjawab &#9989;</span>' 
+                                : '<span class="badge" style="background-color:rgb(242, 235, 29); color: rgb(51, 51, 51);">Belum Dijawab 🕗</span>' ?>
+                        </p>
+                        <p><strong>Tanggal Konsultasi</strong> : <?= htmlspecialchars($konsultasiTerakhir['tgl_konsultasi']) ?></p>
+                        <p><strong>Dokter</strong> : <?= htmlspecialchars($konsultasiTerakhir['nama_dokter']) ?></p>
+                        <p><strong>Subjek</strong> : <?= htmlspecialchars($konsultasiTerakhir['subject']) ?></p>
+                        <p><strong>Pertanyaan</strong> : <?= htmlspecialchars($konsultasiTerakhir['pertanyaan']) ?></p>
+                        <p><strong>Jawaban</strong> : <?= $konsultasiTerakhir['jawaban'] ? htmlspecialchars($konsultasiTerakhir['jawaban']) : 'Belum dijawab' ?></p>
+
+                    <?php else: ?>
+                        <p>Belum ada riwayat konsultasi.</p>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
-            const content = document.getElementById('content');
-
-            if (window.innerWidth > 768) {
-                sidebar.classList.toggle('collapsed');
-                content.classList.toggle('collapsed');
-            } else {
-                sidebar.classList.toggle('open');
-                overlay.classList.toggle('show');
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const sidebar = document.getElementById('sidebar');
-            if (window.innerWidth > 768) {
-                sidebar.classList.remove('open');
-            } else {
-                sidebar.classList.add('hidden');
-            }
-        });
-    </script>
 </body>
 </html>
+
